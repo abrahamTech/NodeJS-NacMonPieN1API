@@ -1,0 +1,20 @@
+{
+  "name": "nodejs-nacmonpien1api",
+  "version": "1.0.0",
+  "description": "NodeJS project that evaluates the estimated loan amount, based on the material and weight of the item.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abrahamTech/NodeJS-NacMonPieN1API.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/abrahamTech/NodeJS-NacMonPieN1API/issues"
+  },
+  "homepage": "https://github.com/abrahamTech/NodeJS-NacMonPieN1API#readme"
+}
