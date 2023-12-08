@@ -26,16 +26,27 @@ const rl = readline.createInterface({
 mostrarMenu();
 
 rl.question('Ingrese el ID del material: ', (idMaterial) => {
+    
+    idMaterial = idMaterial.trim();
     const material = precios[idMaterial];
 
-    if (material !== undefined) {
+    if (!isNaN(idMaterial) && /^[0-9]+$/.test(idMaterial) && material !== undefined) {
         rl.question('Ingrese el peso en gramos: ', (pesoGramos) => {
-            const montoPrestamo = calcularPrestamo(idMaterial, parseFloat(pesoGramos));
-            console.log(`\nMonto estimado del préstamo: $${montoPrestamo.toFixed(2)}`);
-            rl.close();
+            
+            pesoGramos = pesoGramos.trim();
+            const peso = parseFloat(pesoGramos);
+
+            if(!isNaN(peso) && /^[0-9]+(\.[0-9]+)?$/.test(pesoGramos) && peso>0) {   
+                const montoPrestamo = calcularPrestamo(idMaterial, peso);
+                console.log(`\nMonto estimado del préstamo: $${montoPrestamo.toFixed(2)}`);
+                rl.close();
+            } else {
+                console.log('\nPor favor, ingrese un peso válido en gramos.');
+                rl.close();
+            }
         });
     } else {
-        console.log('\nMaterial NO encontrado en la tabla de precios');
+        console.log('\nID de material no válido o no encontrado en la tabla de precios');
         rl.close();
     }
 });
