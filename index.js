@@ -12,41 +12,73 @@ const mostrarMenu = () => {
     console.log('-----------------------');
 };
 
-const calcularPrestamo = (idMaterial, pesoGramos) => {
-    const material = precios[idMaterial];
+const obtenerMaterialPorId = (idMaterial) => {
+    return precios[idMaterial];
+};
+
+const calcularPrestamo = (material, pesoGramos) => {
     const montoPrestamo = (pesoGramos * material.precioGramo) * 0.8;
     return montoPrestamo;
 };
 
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
+const lecturaDatos = () => {
+    const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    });
 
-mostrarMenu();
+    return rl;
+}
 
-rl.question('Ingrese el ID del material: ', (idMaterial) => {
-    
-    idMaterial = idMaterial.trim();
-    const material = precios[idMaterial];
+const solicitarIdMaterial = (rl, callback) => {
+    rl.question("Ingrese el ID del material: ", (idMaterial) => {
 
-    if (!isNaN(idMaterial) && /^[0-9]+$/.test(idMaterial) && material !== undefined) {
-        rl.question('Ingrese el peso en gramos: ', (pesoGramos) => {
-            
-            pesoGramos = pesoGramos.trim();
-            const peso = parseFloat(pesoGramos);
+        idMaterial = idMaterial.trim();
 
-            if(!isNaN(peso) && /^[0-9]+(\.[0-9]+)?$/.test(pesoGramos) && peso>0) {   
-                const montoPrestamo = calcularPrestamo(idMaterial, peso);
-                console.log(`\nMonto estimado del préstamo: $${montoPrestamo.toFixed(2)}`);
-                rl.close();
-            } else {
-                console.log('\nPor favor, ingrese un peso válido en gramos.');
-                rl.close();
-            }
-        });
-    } else {
-        console.log('\nID de material no válido o no encontrado en la tabla de precios');
-        rl.close();
-    }
-});
+        if(!isNaN(idMaterial) && /^[0-9]+$/.test(idMaterial)) {
+            callback(idMaterial);
+        } else {
+            console.log('\nPor favor, ingrese un ID válido (números solamente).');
+            rl.close();
+        }
+
+    })
+}
+
+const solicitarPeso = (rl, idMaterial) => {
+    rl.question("Ingrese el peso en gramos (puede incluir decimales): ", (pesoGramos) => {
+        
+        pesoGramos = pesoGramos.trim();
+        const peso = parseFloat(pesoGramos);
+
+        if(!isNaN(peso) && /^[0-9]+(\.[0-9]+)?$/.test(pesoGramos) && peso>0) {   
+            const material = obtenerMaterialPorId(idMaterial);
+            const montoPrestamo = calcularPrestamo(material, peso);
+            console.log(`\nMonto estimado del préstamo: $${montoPrestamo.toFixed(2)}`);
+            rl.close();
+        } else {
+            console.log('\nPor favor, ingrese un peso válido en gramos.');
+            rl.close();
+        }
+
+    })
+}
+
+
+const iniciarSolicitudPrestamo = () => {
+    const rl = lecturaDatos();
+
+    mostrarMenu();
+
+    solicitarIdMaterial(rl, (idMaterial) => {
+        const material = obtenerMaterialPorId(idMaterial);
+        if(material) {
+            solicitarPeso(rl, idMaterial);
+        } else {
+            console.log('\nID del material no encontrado en la tabla de precios.');
+            rl.close();
+        }
+    })
+}
+
+iniciarSolicitudPrestamo();
